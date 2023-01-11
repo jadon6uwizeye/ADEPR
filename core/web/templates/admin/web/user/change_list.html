@@ -1,0 +1,99 @@
+{% extends "admin/change_list.html" %} {% load static %}
+
+<!-- Override extrahead to add Chart.js -->
+{% block extrahead %} {{ block.super }}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    // Sample data
+    const chartData = {{ chart_data | safe }};
+    console.log(chartData);
+    // Parse the dates to JS
+    chartData.admins.forEach((d) => {
+      d.x = Intl.DateTimeFormat('en-US').format(new Date(d.date));
+    });
+    chartData.church_members.forEach((d) => {
+      d.x = Intl.DateTimeFormat('en-US').format(new Date(d.date));
+    });
+    let config=    {
+      type: 'bar',
+      data: {
+        datasets: [
+          {
+            label: 'Admins',
+            data: chartData.admins,
+            backgroundColor: 'rgba(72,131,10,0.7)',
+          },
+          {
+            label: 'church_members',
+            data: chartData.church_members,
+            backgroundColor: 'rgba(67,51,109,0.7)',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [
+            {
+              type: 'time',
+              time: {
+                unit: 'day',
+                round: 'day',
+                displayFormats: {
+                  day: 'MMM D',
+                },
+              },
+            },
+          ],
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    }
+    // Render the chart
+    let chart = new Chart(ctx,config);
+      // Reload chart data from the backend on button click
+  const selector = document.querySelector('#reload');
+  selector.addEventListener('change', async() => {
+    const res = await fetch(`/dashboard/accounts/user/chart_data?dataFrom=${selector.value}`);
+    const json = await res.json();
+    
+    json.admins.forEach((d) => {
+      d.x = Intl.DateTimeFormat('en-US').format(new Date(d.date));
+    });
+    json.church_members.forEach((d) => {
+      d.x = Intl.DateTimeFormat('en-US').format(new Date(d.date));
+    });
+    config.data.datasets[0].data = json.admins;
+    config.data.datasets[1].data = json.church_members;
+    chart.update();
+  });
+  });
+</script>
+{% endblock %} {% block content %}
+<!-- Render our chart -->
+<div style="width: 80%">
+  <canvas
+    style="margin-bottom: 30px; width: 60%; height: 50%"
+    id="myChart"
+  ></canvas>
+</div>
+<select id="reload">
+  <option value="">...</option>
+  <option value="0">Last month</option>
+  <option value="6">6 Months</option>
+</select>
+<!-- Render the rest of the ChangeList view -->
+{{ block.super }} {% endblock %}
