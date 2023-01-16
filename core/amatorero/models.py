@@ -10,78 +10,61 @@ from web.models import User
 
 # Create your models here.
 
-class Province(models.Model):
+class Region(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(_("name"), max_length=100)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name = _("Province")
-        verbose_name_plural = _("Provinces")
+        verbose_name = _("Region")
+        verbose_name_plural = _("Regions")
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("Province_detail", kwargs={"pk": self.pk})
+        return reverse("Region_detail", kwargs={"pk": self.pk})
 
 
-class District(models.Model):
+class Ururembo(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(_("name"), max_length=100)
-    province = models.ForeignKey(Province, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name = _("District")
-        verbose_name_plural = _("Districts")
+        verbose_name = _("Ururembo")
+        verbose_name_plural = _("Indembo")
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("District_detail", kwargs={"pk": self.pk})
+        return reverse("Ururembo_detail", kwargs={"pk": self.pk})
 
 
-class Sector(models.Model):
+class Parish(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(_("name"), max_length=100)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    ururembo = models.ForeignKey(Ururembo, on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
 
     class Meta:
-        verbose_name = _("Sector")
-        verbose_name_plural = _("Sectors")
+        verbose_name = _("Parish")
+        verbose_name_plural = _("Parishes")
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("Sector_detail", kwargs={"pk": self.pk})
+        return reverse("parish_detail", kwargs={"pk": self.pk})
 
 
-class Cell(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    name = models.CharField(_("name"), max_length=100)
-    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
-    sector = models.ForeignKey(Sector, on_delete=models.CASCADE)
-    admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
 
-    class Meta:
-        verbose_name = _("Cell")
-        verbose_name_plural = _("Cells")
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse("Cell_detail", kwargs={"pk": self.pk})
-
-
-class Itorero(models.Model):
+class LocalChurch(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(_("name"), max_length=100)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -89,12 +72,12 @@ class Itorero(models.Model):
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name = _("Itorero")
+        verbose_name = _("Local church")
         verbose_name_plural = _("Amatorero")
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("Itorero_detail", kwargs={"pk": self.pk})
+        return reverse("local _church_detail", kwargs={"pk": self.pk})
 

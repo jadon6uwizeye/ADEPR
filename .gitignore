@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 core/web/migrations/
+core/services/migrations/
+core/amatorero/migrations/

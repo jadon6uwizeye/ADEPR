@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
-from amatorero.models import Itorero
+from amatorero.models import LocalChurch
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class Member(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='church_members')
     gender = models.CharField(_("gender"), max_length=50, choices=GENDER_CHOICES)
-    itorero = models.ForeignKey(Itorero, verbose_name=_("Itorero arimo"), on_delete=models.CASCADE)
+    local_church = models.ForeignKey(LocalChurch, verbose_name=_("Local church"), on_delete=models.CASCADE)
 
 
     class Meta:
@@ -28,7 +28,7 @@ class Member(models.Model):
         verbose_name_plural = _("Members")
 
     def __str__(self):
-        return self.name
+        return self.user.full_name
 
     def get_absolute_url(self):
         return reverse("Member_detail", kwargs={"pk": self.pk})
@@ -58,7 +58,7 @@ class Offering(models.Model):
     category = models.ForeignKey(OfferingCategory, on_delete=models.SET_NULL, null=True)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     recorder = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    itorero = models.ForeignKey(Itorero, on_delete=models.SET_NULL, null=True)
+    local_church = models.ForeignKey(LocalChurch, on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -101,7 +101,7 @@ class DocumentRequest(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     details = models.TextField(_("some details for the document being requested"))
     status = models.CharField(_("choices"), max_length=50, choices=STATUS_CHOICES)
-    itorero = models.ForeignKey(Itorero, on_delete=models.SET_NULL, null=True)
+    local_church = models.ForeignKey(LocalChurch, on_delete=models.SET_NULL, null=True)
 
 
     class Meta:

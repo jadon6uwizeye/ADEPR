@@ -52,8 +52,6 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
                     "user_type",
                     "address",
                     "about",
-                    "total_friends",
-
                 )
             },
         ),
