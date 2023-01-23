@@ -4,5 +4,5 @@ from .models import *
 
 admin.site.register(Region)
 admin.site.register(Ururembo)
-admin.site.register(Parish)
+# admin.site.register(Parish)
 admin.site.register(LocalChurch)

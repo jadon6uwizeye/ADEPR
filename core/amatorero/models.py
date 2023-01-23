@@ -45,22 +45,22 @@ class Ururembo(models.Model):
         return reverse("Ururembo_detail", kwargs={"pk": self.pk})
 
 
-class Parish(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    name = models.CharField(_("name"), max_length=100)
-    ururembo = models.ForeignKey(Ururembo, on_delete=models.CASCADE)
-    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
-    admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
+# class Parish(models.Model):
+#     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+#     name = models.CharField(_("name"), max_length=100)
+#     ururembo = models.ForeignKey(Ururembo, on_delete=models.CASCADE)
+#     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+#     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
 
-    class Meta:
-        verbose_name = _("Parish")
-        verbose_name_plural = _("Parishes")
+#     class Meta:
+#         verbose_name = _("Parish")
+#         verbose_name_plural = _("Parishes")
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
-    def get_absolute_url(self):
-        return reverse("parish_detail", kwargs={"pk": self.pk})
+#     def get_absolute_url(self):
+#         return reverse("parish_detail", kwargs={"pk": self.pk})
 
 
 
@@ -68,7 +68,7 @@ class LocalChurch(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(_("name"), max_length=100)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
-    cell = models.ForeignKey(Cell, on_delete=models.CASCADE)
+    # parish = models.ForeignKey(Parish, on_delete=models.CASCADE)
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
