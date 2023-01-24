@@ -35,7 +35,7 @@ class UserAdminCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username','NID')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -44,11 +44,49 @@ class UserAdminCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
+    
+    def fetch_administration_info(self,NID):
+        import requests
+
+        # Make a GET request to the API
+        response = requests.post(f'https://smarthrapi.mifotra.gov.rw/employees/getCitizen/{NID}')
+
+        # Check for a successful response
+        if response.status_code == 200:
+            # Convert the JSON response to a Python dictionary
+            data = response.json()
+            return data
+        else:
+            raise forms.ValidationError("Failed to fetch data from the National ID")
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
+        # Save the provided password in hashed format and all the other information
+
         user = super(UserAdminCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+
+        # fetch data from the api using the NID from the form
+        data = self.fetch_administration_info(user.NID)
+
+        # add other data
+        user.full_name = data['surnames']+data['foreName']
+        user.father_names = data['fatherNames']
+        user.mother_names = data['motherNames']
+        user.date_of_birth = data['dateOfBirth']
+        user.place_of_birth = data['placeOfBirth']
+        user.birth_country = data['birthCountry']
+        user.village = data['village']
+        user.cell = data['cell']
+        user.sector = data['sector']
+        user.district = data['district']
+        user.province = data['province']
+        user.marital_status = data['maritalStatus']
+        user.spouse = data['spouse']
+        user.is_active = True
+        user.admin = False
+        user.staff = False
+        user.is_superuser = False
+        user.save()
         if commit:
             user.save()
         return user

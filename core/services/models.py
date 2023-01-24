@@ -20,7 +20,7 @@ class Member(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='church_members')
     gender = models.CharField(_("gender"), max_length=50, choices=GENDER_CHOICES)
-    local_church = models.ForeignKey(LocalChurch, verbose_name=_("Local church"), on_delete=models.CASCADE)
+    # local_church = models.ForeignKey(LocalChurch, verbose_name=_("Local church"), on_delete=models.CASCADE)
 
 
     class Meta:

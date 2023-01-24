@@ -56,6 +56,26 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
             },
         ),
         (
+            "Administrative info",
+            {
+                "fields": (
+                    "NID",
+                    "father_names",
+                    "mother_names",
+                    "date_of_birth",
+                    "place_of_birth",
+                    "birth_country",
+                    "village",
+                    "cell",
+                    "sector",
+                    "district",
+                    "province",
+                    "marital_status",
+                    "spouse",
+                )
+            },
+        ),
+        (
             "Permissions",
             {
                 "fields": (
@@ -72,6 +92,7 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
         (None, {"classes": ("wide",), "fields": (
             "email",
             "username",
+            "NID",
             "password1",
             "password2"
         )}),
