@@ -9,14 +9,13 @@ from django.utils.translation import gettext as _
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, username, full_name, password=None, **extra_fields):
+    def create_user(self, username, full_name, password=None, **extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
-        if not email:
-            raise ValueError(_("Users must have an email address"))
+        # if not email:
+        #     raise ValueError(_("Users must have an email address"))
         user = self.model(
-            email=self.normalize_email(email),
             username=username,
             full_name=full_name,
             **extra_fields,
@@ -26,16 +25,15 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self, email, username, full_name, password=None, **extra_fields
+        self, phone_number, username, full_name, **extra_fields
     ):
         """
         Creates and saves a admin with the given email and password.
         """
         user = self.create_user(
-            email,
             username,
             full_name,
-            password=password,
+            phone_number,
             **extra_fields,
         )
         user.is_active = True
@@ -61,7 +59,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         (ADMIN, "Administartor"),
     )
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    email = models.EmailField("email address", max_length=255, unique=True)
     full_name = models.CharField(_("full name"), max_length=100)
     username = models.CharField(_("username"), max_length=100, unique=True)
 
@@ -78,7 +75,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     # a admin user; non super-user
     staff = models.BooleanField(_("staff"), default=False)
     admin = models.BooleanField(_("admin"), default=False)
-    NID = models.CharField(_("National ID"), max_length=50)
+    church_asengeramo= models.ForeignKey("amatorero.LocalChurch", verbose_name=_("Itorero arimo"), on_delete=models.CASCADE, related_name='current_church', null=True)
+    church_yabatirijwemo= models.ForeignKey("amatorero.LocalChurch", verbose_name=_("Itorero yabatirijwemo"), related_name='church', on_delete=models.CASCADE, null=True)
+    ubudehe = models.CharField(_("Ikiciro cyubudehe"), max_length=50, null=True)
+    NID = models.CharField(_("National ID"), max_length=50, unique=True)
     father_names = models.CharField(_("fathers' name"), max_length=50, null=True) 
     mother_names = models.CharField(_("mothers' name"), max_length=50, null=True)
     date_of_birth = models.CharField(_("date of birth"),max_length=50, null=True, blank=True)
@@ -93,19 +93,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     spouse = models.CharField(_("spouse"), max_length=50, null=True, blank=True)
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     objects = UserManager()
-    USERNAME_FIELD = _("username")
-    REQUIRED_FIELDS = ["email", "full_name"]
+    USERNAME_FIELD = _("NID")
+    REQUIRED_FIELDS = ["phone_number", "full_name"]
 
     class Meta:
         ordering = ['full_name']
 
 
     def get_full_name(self):
-        # The user is identified by their email address
         return self.full_name
 
     def get_short_name(self):
-        # The user is identified by their email address
         return self.full_name
 
     def __str__(self):  # __unicode__ on Python 2

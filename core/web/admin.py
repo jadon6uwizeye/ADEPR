@@ -26,8 +26,9 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
 
     list_display = (
         "username",
-        "email",
         "full_name",
+        "phone_number",
+        "church_asengeramo",
         "user_type",
         "created_on",
     )
@@ -40,7 +41,6 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
     fieldsets = (
         (None, {"fields": (
             "username",
-            "email",
             "password"
         )}),
         (
@@ -52,6 +52,9 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
                     "user_type",
                     "address",
                     "about",
+                    "ubudehe",
+                    "church_asengeramo",
+                    "church_yabatirijwemo",
                 )
             },
         ),
@@ -90,15 +93,14 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": (
-            "email",
-            "username",
             "NID",
-            "password1",
-            "password2"
+            "phone_number",
+            "ubudehe",
+            "church_asengeramo",
+            "church_yabatirijwemo",
         )}),
     )
     search_fields = (
-        "email",
         "username",
         "full_name",
         "phone_number"

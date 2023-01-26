@@ -29,21 +29,13 @@ class UserAdminCreationForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label='Password confirmation', widget=forms.PasswordInput)
+    # password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    # password2 = forms.CharField(
+    #     label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('username','NID')
-
-    def clean_password2(self):
-        # Check that the two password entries match
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
-        return password2
+        fields = ('NID','phone_number')
     
     def fetch_administration_info(self,NID):
         import requests
@@ -63,13 +55,15 @@ class UserAdminCreationForm(forms.ModelForm):
         # Save the provided password in hashed format and all the other information
 
         user = super(UserAdminCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        # set username
+        user.username = self.cleaned_data["NID"]
+        user.set_password(self.cleaned_data["phone_number"])
 
         # fetch data from the api using the NID from the form
         data = self.fetch_administration_info(user.NID)
 
         # add other data
-        user.full_name = data['surnames']+data['foreName']
+        user.full_name = data['surnames']+' '+data['foreName']
         user.father_names = data['fatherNames']
         user.mother_names = data['motherNames']
         user.date_of_birth = data['dateOfBirth']
@@ -101,7 +95,7 @@ class UserAdminChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'is_active', 'admin')
+        fields = ('username', 'phone_number', 'is_active', 'admin')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
