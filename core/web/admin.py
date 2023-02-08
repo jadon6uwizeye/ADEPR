@@ -36,6 +36,8 @@ class UserAdmin(admin.OSMGeoAdmin, BaseUserAdmin, admin.ModelAdmin,):
         "user_type",
         "is_active",
         "admin",
+        "church_asengeramo",
+        "church_yabatirijwemo",
 
     )
     fieldsets = (
